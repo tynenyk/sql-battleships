@@ -87,3 +87,18 @@ begin
 end;
 $$;
 
+create or replace procedure game_wait_for_ready(game_id text)
+language plpgsql
+as $$
+declare
+	c int;
+begin
+	loop
+		execute 'select count(*) from game_event_' || game_id || 'where event = '';' into c;
+		if c = 2 then
+			exit;
+		end if;
+		perform pg_sleep(1);
+	end loop;
+end;
+$$
