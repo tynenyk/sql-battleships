@@ -12,3 +12,4 @@ docker run -p 5432:5432 sql-battleships
 ```
 psql -U postgres <<<'call screen_loop()' & psql -U postgres
 ```
+Спасибо Firemoon777(https://github.com/Firemoon777)
