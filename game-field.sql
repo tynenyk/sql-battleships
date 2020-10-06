@@ -102,3 +102,49 @@ begin
 	end loop;
 end;
 $$
+
+create or replace procedure game_print_single_field(game_id text, player text)
+language plpgsql
+as $$
+declare
+	r record;
+	ships int;
+	additinal text := '';
+begin
+	raise info '.. A B C D E F G H I J';
+	for r in execute 'select * from game_field_' || game_id || '_' || player || 'order by id' loop
+		select '' into additinal;
+		if r.id = 3 then
+			execute format('select count(*) from game_ships_%_%s', game_id, player) into ships;
+			if ships = 4 + 3 + 2 + 1 then
+				select '	You READY' into additinal;
+			else
+				select '	You Preparing...' into additinal;
+			end if;
+		end if;
+		if r.id = 4 then
+			execute format('select count(*) from game_ships_%_%s', game_id, chr(asscii('a') + (asscii('b') - asscii(player)))) into ships;
+			if ships = 4 + 3 + 2 + 1 then
+				select 'Opponent READY' into additinal;
+			else
+				select 'Opponent Preparing...' into additinal;
+			end if;
+		end if;
+		raise info '% % % % % % % % % % % %', format('%2s', r.id), r.A, r.B, r.C, r.D, r.E, r.F, r.G, r.H, r.I, r.J, additinal;
+	end loop;
+end;
+$$
+
+create or replace procedure game_place_cell(game_id text, player text, cell text, data text)
+language plpgsql
+as $$
+declare
+	col text;
+	row text;
+begin
+	select substr(cell, 1, 1) into col;
+	select substr(cell, 2, 1) into row;
+
+	execute format('update game_field_%s_%s set %s =''%s'' where id = %s', game_id, player, col, data, row);
+end
+$$;
