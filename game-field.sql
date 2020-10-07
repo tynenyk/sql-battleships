@@ -148,3 +148,27 @@ begin
 	execute format('update game_field_%s_%s set %s =''%s'' where id = %s', game_id, player, col, data, row);
 end
 $$;
+
+create or replace procedure game_place_react(game_id text, player text, from_cell text, to_cell text, data text)
+language plpgsql
+as $$
+declare
+	col_from text;
+	col_to text;
+	row_from text;
+	row_to text;
+	cell text;
+begin
+	select substr(from_cell, 1, 1) into col_from;
+	select substr(from_cell, 2, 1) into row_from;
+	select substr(to_cell, 1, 1) into col_to;
+	select substr(to_cell, 2, 1) into row_to;
+
+	for i in least(ascii(col_from), ascii(col_to))..greatest(ascii(col_from), ascii(col_to)) loop
+		for j in least(row_from, row_to)..greatest(row_from, row_to) loop
+			select format('%s%s', chr(i), j) into cell;
+			call game_place_cell(game_id, player, call, data);
+		end loop;
+	end loop;
+end
+$$;
