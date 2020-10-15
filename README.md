@@ -1,15 +1,25 @@
-# Требования
-<li>postgresql 12.4</li>
-<li>docker (optional)</li>
+# SQL Battleships
 
-# Запуск сервера в докере
+![](res/gameplay.gif)
+
+Articles:
+- https://selectel.ru/blog/seabattle-postgresql/
+- https://habr.com/ru/company/selectel/blog/519010/
+
+## Requirements 
+
+- postgresql 12.4
+- docker (optional)
+
+## Running server in docker
+
 ```
 docker build -t sql-battleships .
 docker run -p 5432:5432 sql-battleships
-```
+``` 
 
-# Запуск игры
+## Starting the game
+
 ```
 psql -U postgres <<<'call screen_loop()' & psql -U postgres
 ```
-Спасибо Firemoon777(https://github.com/Firemoon777)
